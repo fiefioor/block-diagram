@@ -1,0 +1,116 @@
+#app{
+	padding-top: 1em;
+}
+
+.block-component{
+	position: absolute;	
+}
+
+.block-component polygon.block-predicate{
+	fill:#EAEA44;
+	stroke:#333;
+	stroke-width:1;
+}
+
+.block-component polygon.block-output{
+	fill: #61ea29;
+	stroke:#333;
+	stroke-width:2;
+}
+
+.block-component > svg{
+	width: 140px;
+	height:35px;
+}
+
+.block-component .attachment{
+	background: #95C4F7;
+	border:1px solid #111;
+
+	margin-left: -7px;
+	margin-top: -7px;
+	width:14px;
+	height:14px;
+	
+	border-radius: 10px;
+}
+
+.block-component .attachment.active{
+    animation: attachment-active-anim .7s infinite;
+}
+
+@keyframes attachment-active-anim {
+    0%   {background: #95C4F7;}
+    50%  {background: #004DFF;}
+    100%  {background: #95C4F7;}
+}
+
+.block-component .attachment:hover{
+	border: 3px solid #f00;
+	cursor: pointer;
+}
+
+.block-component .attachment.attachment-top{
+	position: absolute;
+	top:0px;
+	left:50%;	
+}
+
+.block-component .attachment.attachment-left{
+	position: absolute;
+	top:50%;
+	left:0;	
+}
+
+.block-component .attachment.attachment-right{
+	position: absolute;
+	top:50%;
+	left:100%;	
+}
+
+.block-component .attachment.attachment-bottom{
+	position: absolute;
+	top:100%;
+	left:50%;	
+}
+
+
+#diagram-component{
+	position: relative;
+	height: 600px;
+
+	overflow: hidden; /* changing to scroll would be better, but it would require rewriting how links are drawn */
+
+	background-color:#fff;
+	background-image: linear-gradient(#666 1px, transparent 1px),
+					linear-gradient(90deg, #666 1px, transparent 1px),
+					linear-gradient(#aaa 1px, transparent 1px),
+					linear-gradient(90deg, #aaa 1px, transparent 1px);
+	background-size:100px 100px, 100px 100px, 20px 20px, 20px 20px;
+	background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px
+}
+
+.fadein-transition {
+  transition: all 1s ease;
+}
+
+.fadein-enter, .fadein-leave {
+  opacity: 0;
+}
+
+#block-list-component tr.block-operand{
+	color:#334499;
+}
+#block-list-component tr.block-predicate{
+	color:#757507;
+}
+
+svg.link-component{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+svg.link-component > circle{
+	fill: rgba(0,123,0,1);
+}
