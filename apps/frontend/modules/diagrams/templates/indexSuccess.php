@@ -1,4 +1,3 @@
-
 <title>js-block-diagram</title>
 <link rel="stylesheet" type="text/css" href="/vendor/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="/css/style.css">
@@ -49,7 +48,7 @@
             :y2="b.y"
             style="stroke:#333;stroke-width:2"
         />
-        <circle :cx="b.x" :cy="b.y" r="3" />
+        <circle :cx="b.x" :cy="b.y" r="3"/>
     </svg>
 </template>
 
@@ -73,7 +72,7 @@
             <rect
                 height="100%"
                 width="100%"
-                style="fill:rgb(140,140,190);stroke-width:3;stroke:rgb(0,0,0)" />
+                style="fill:rgb(140,140,190);stroke-width:3;stroke:rgb(0,0,0)"/>
             <text x="5" y="20" fill="#554466">{{block.text}}</text>
         </svg>
         <svg
@@ -85,12 +84,12 @@
         </svg>
         <svg
             v-if="block.type==='output'">
-            <polygon points="0,0 140,0 70,35" class="block-output" />
+            <polygon points="0,0 140,0 70,35" class="block-output"/>
             <text x="25" y="20" fill="#554466">{{block.text}}</text>
         </svg>
         <svg
             v-if="block.type==='input'">
-            <polygon points="70,0 0,35 140,35" class="block-input" />
+            <polygon points="70,0 0,35 140,35" class="block-input"/>
             <text x="25" y="20" fill="#554466">{{block.text}}</text>
         </svg>
 
@@ -219,10 +218,11 @@
     </div>
 </template>
 
-
-
+<div>
+    <a class="btn btn-primary btn-sm" href="<?php echo url_for('generate'); ?>">Generuj</a>
+</div>
 
 
 <script src="/vendor/vue.js"></script>
 <script src="/vendor/jquery-2.2.1.min.js"></script>
-<script src="/js/index.js"></script>s
+<script src="/js/index.js"></script>

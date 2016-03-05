@@ -111,6 +111,13 @@
 	color:#757507;
 }
 
+#block-list-component tr.block-input{
+	color:#334499;
+}
+#block-list-component tr.block-output{
+	color:#757507;
+}
+
 svg.link-component{
 	position: absolute;
 	width: 100%;

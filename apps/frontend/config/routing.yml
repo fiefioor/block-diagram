@@ -6,6 +6,10 @@ homepage:
   url:   /
   param: { module: diagrams, action: index }
 
+generate:
+  url:  /generate
+  param: { module: diagrams, action: generate}
+
 # generic rules
 # please, remove them by adding more specific rules
 #default_index:

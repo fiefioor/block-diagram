@@ -17,8 +17,10 @@ class diagramsActions extends sfActions
   */
   public function executeIndex(sfWebRequest $request)
   {
-    //$this->forward('default', 'module');
-    //var_dump('test');
-    $this->getTemplate();
+
+  }
+
+  public function executeGenerate(sfWebRequest $request){
+    $this->Code = 'Wygenerowany kod';
   }
 }
