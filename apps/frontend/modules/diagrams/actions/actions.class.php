@@ -23,8 +23,16 @@ class diagramsActions extends sfActions
   public function executeGenerate(sfWebRequest $request){
     $data = @$_POST['data'] ?: "";
 
+    if($request->hasParameter('data')){
+      $data = $request->getParameter('data');
+    }
+
+    CCommand::run($data);
+
+    //var_dump($request->hasParameter('data'));
+
     echo "<pre>";
-    var_dump(json_decode($data));
+    //var_dump($data);
     $this->Code = 'Wygenerowany kod';
   }
 }

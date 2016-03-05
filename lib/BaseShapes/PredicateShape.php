@@ -6,7 +6,7 @@
  * Date: 05.03.16
  * Time: 14:01
  */
-class PredicateShape extends BaseShape
+abstract class PredicateShape extends BaseShape
 {
     protected $false_id;
     protected $true_id;

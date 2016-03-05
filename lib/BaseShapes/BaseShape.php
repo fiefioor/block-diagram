@@ -11,26 +11,31 @@ abstract class BaseShape
     protected $Content;
     protected $id;
 
-    protected $prev_id;
+    protected $prev_ids;
+    protected $return;
 
     /**
      * @return mixed
      */
-    public function getPrevId()
+    public function getPrevIds()
     {
-        return $this->prev_id;
+        return $this->prev_ids;
     }
 
     /**
-     * @param mixed $prev_id
+     * @param mixed $prev_ids
      */
-    public function setPrevId($prev_id)
+    public function setPrevIds($prev_ids)
     {
-        $this->prev_id = $prev_id;
+        $this->prev_ids = $prev_ids;
+    }
+
+    public function addPrevId($id){
+        $this->prev_ids[] = $id;
     }
 
     /**
-     * Pobiera Id poprzedniego Elementu
+     *
      *
      * @return mixed
      */
@@ -64,5 +69,14 @@ abstract class BaseShape
     {
         $this->Content = $Content;
     }
+
+    public function fill(){
+        $this->preFill();
+
+    }
+
+    public abstract function preFill();
+
+    public abstract function postFill();
 
 }

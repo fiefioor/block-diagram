@@ -6,7 +6,7 @@
  * Date: 05.03.16
  * Time: 13:59
  */
-class OperandShape extends BaseShape
+abstract class OperandShape extends BaseShape
 {
     protected $next_id;
 

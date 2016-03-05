@@ -6,7 +6,7 @@
  * Date: 05.03.16
  * Time: 14:06
  */
-class InputShape extends BaseShape
+abstract class InputShape extends BaseShape
 {
     protected $next_id;
 

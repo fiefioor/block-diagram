@@ -172,8 +172,6 @@
         <table class="table table-bordered table-condensed">
             <tr>
                 <th>type</th>
-                <th></th>
-                <th></th>
                 <th>text</th>
                 <th></th>
             </tr>
