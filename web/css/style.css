@@ -18,6 +18,12 @@
 	stroke-width:2;
 }
 
+.block-component polygon.block-input{
+	fill: #43deea;
+	stroke:#333;
+	stroke-width:2;
+}
+
 .block-component > svg{
 	width: 140px;
 	height:35px;

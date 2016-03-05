@@ -85,7 +85,12 @@
         </svg>
         <svg
             v-if="block.type==='output'">
-            <polygon points="25,0 140,0 115,35 0,35" class="block-output" />
+            <polygon points="0,0 140,0 70,35" class="block-output" />
+            <text x="25" y="20" fill="#554466">{{block.text}}</text>
+        </svg>
+        <svg
+            v-if="block.type==='input'">
+            <polygon points="70,0 0,35 140,35" class="block-input" />
             <text x="25" y="20" fill="#554466">{{block.text}}</text>
         </svg>
 
@@ -121,6 +126,15 @@
         </template>
 
         <template v-if="block.type==='output'">
+            <div
+                class="attachment attachment-bottom"
+                :class="{active: active_attachments.bottom}"
+
+                @click="attachmentClicked('bottom')"
+            ></div>
+        </template>
+
+        <template v-if="block.type==='input'">
             <div
                 class="attachment attachment-bottom"
                 :class="{active: active_attachments.bottom}"
@@ -186,6 +200,13 @@
                 @click="createBlock('operand')"
             >
                 <i class="fa fa-plus"></i> operand
+            </a>
+            <a
+                href="#"
+                class="btn btn-primary btn-sm"
+                @click="createBlock('input')"
+            >
+                <i class="fa fa-plus"></i> input
             </a>
             <a
                 href="#"
