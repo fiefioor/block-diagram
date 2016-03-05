@@ -1,7 +1,9 @@
 #app{
 	padding-top: 1em;
 }
-
+.bottom-margin{
+	margin-bottom: 10px;
+}
 .block-component{
 	position: absolute;	
 }

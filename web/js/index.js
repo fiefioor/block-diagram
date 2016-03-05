@@ -199,6 +199,13 @@
 				}
 			]
 		},
+		methods: {
+			submitDiagram: function(event){
+				event.preventDefault();
+				var url = event.target.href;
+
+			}
+		},
 		computed:{
 			current_id: function(){
 				var max = 0;
@@ -206,6 +213,12 @@
 					max = Math.max(block.id, max);
 				});
 				return max;
+			},
+			exported_data: function(){
+				return {
+					blocks: this.blocks,
+					links: this.links
+				};
 			}
 		},
 

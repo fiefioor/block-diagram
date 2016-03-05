@@ -21,6 +21,14 @@
                 transition="fadein"
                 :block.sync="active_block"
             ></block-editor-component>
+            <div class="bottom-margin">
+                <form action="<?php echo url_for('generate'); ?>" method="post">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fa fa-cogs"></i> Generuj
+                    </button>
+                    <input name="data" type="hidden" :value='exported_data|json'>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -146,7 +154,7 @@
 </template>
 
 <template id="block-editor-component">
-    <div id="block-editor-component">
+    <div id="block-editor-component" class="bottom-margin">
         <div class="input-group">
             <label for="block-text-input">Text: </label>
             <input
@@ -160,7 +168,7 @@
 </template>
 
 <template id="block-list-component">
-    <div id="block-list-component">
+    <div id="block-list-component" class="bottom-margin">
         <table class="table table-bordered table-condensed">
             <tr>
                 <th>type</th>
@@ -217,10 +225,6 @@
         </div>
     </div>
 </template>
-
-<div>
-    <a class="btn btn-primary btn-sm" href="<?php echo url_for('generate'); ?>">Generuj</a>
-</div>
 
 
 <script src="/vendor/vue.js"></script>
