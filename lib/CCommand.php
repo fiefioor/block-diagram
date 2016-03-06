@@ -89,7 +89,7 @@ class CCommand
                     $tmp = new COperandShape();
                     break;
                 case 'predicate':
-                    echo "predicate";
+                    $tmp = new CPredicateShape();
                     break;
                 case 'input':
                     $tmp = new CInputShape();
@@ -103,22 +103,30 @@ class CCommand
             $return[$block->id] = $tmp;
         }
 
-        foreach($decodeJson['links'] as $link){
-            //if(!$return[$link->a->block_id] instanceof CPredShape ){
-                $return[$link->a->block_id]->setNextId($link->b->block_id);
-                $return[$link->b->block_id]->addPrevId($link->a->block_id);
-            //}
 
+        foreach($decodeJson['links'] as $link){
+            if(!$return[$link->a->block_id] instanceof CPredicateShape ){
+                $return[$link->a->block_id]->setNextId($link->b->block_id);
+
+            }
+            else{
+                if($link->a->type == "right"){
+                    $return[$link->a->block_id]->addFalseId($link->b->block_id);
+                } else {
+                    $return[$link->a->block_id]->addTrueId($link->b->block_id);
+                }
+            }
+            $return[$link->b->block_id]->addPrevId($link->a->block_id);
         }
 
         return $return;
     }
 
-    private static function preFill(){
-        return "#include <iostream.h>\n
+    private static function preFill($code){
+        $code[] =  "#include \<iostream.h\>";
+        $code[] ="int main(){";
 
-int main()\n
-{\n";
+        return $code;
     }
 
     private static function postFill(){
@@ -126,14 +134,60 @@ int main()\n
 
     }
 
+
+    /**
+     * Funkcja ogarniacja predykaty
+     *
+     * @param $blocks - tablica blokow
+     */
+    private function predicatesOrders($blocks, CPredicateShape $predicat){
+
+        $trueIds = array();
+        $nextTrueId = null;
+        $falseIds = array();
+        $nextFalseId = null;
+
+        foreach($blocks as $block){
+            if($block->getId() == $predicat->getId()){
+                $trueIds[] = $predicat->getTrueId();
+                $nextTrueId = $predicat->getTrueId();
+                $falseIds[] = $predicat->getFalseId();
+                $nextFalseId = $predicat->getFalseId();
+            }
+        }
+
+        for($i=0; $i<count($blocks); $i++){
+
+        }
+
+    }
+
     private static function fill($code , $blocks){
+
+        $insertedIds = array();
 
         $code[] = self::preFill();
 
-        /*$fristID = array_keys($blocks)[0];
-        for($i = 0; $i < count($blocks); $i++){
+        $ids = array_keys($blocks);
+        $nextId = null;
 
-        }*/
+        foreach($ids as $id){
+            if($blocks[$id]->getPrevIds() == null){
+                $code[] = $blocks[$id]->fill();
+                $nextId = $blocks[$id]->getNextId();
+                $insertedIds[] = $id;
+            }
+        }
+
+        for($i = 0; $i < count($blocks) - 1; $i++){
+
+            if(!$blocks[$nextId] instanceof CPredicateShape) {
+                $code[] = $blocks[$nextId]->fill();
+                $insertedIds[] = $blocks[$nextId]->getId();
+                $nextId = $blocks[$nextId]->getNextId();
+            }
+
+        }
 
         $code[] = self::postFill();
 

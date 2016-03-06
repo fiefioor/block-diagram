@@ -8,8 +8,8 @@
  */
 abstract class PredicateShape extends BaseShape
 {
-    protected $false_id;
-    protected $true_id;
+    protected $false_ids = array();
+    protected $true_ids = array();
 
     /**
      * zwraca id elementu ktory jest na sciezce nie spelnajacej warunku
@@ -18,15 +18,19 @@ abstract class PredicateShape extends BaseShape
      */
     public function getFalseId()
     {
-        return $this->false_id;
+        return $this->false_id[0];
     }
 
     /**
      * @param mixed $false_id
      */
-    public function setFalseId($false_id)
+    public function setFalseId($false_ids)
     {
-        $this->false_id = $false_id;
+        $this->false_ids = $false_ids;
+    }
+
+    public function addFalseId($id){
+        $this->false_ids[] = $id;
     }
 
     /**
@@ -36,15 +40,19 @@ abstract class PredicateShape extends BaseShape
      */
     public function getTrueId()
     {
-        return $this->true_id;
+        return $this->true_ids[0];
     }
 
     /**
      * @param mixed $true_id
      */
-    public function setTrueId($true_id)
+    public function setTrueId($true_ids)
     {
-        $this->true_id = $true_id;
+        $this->true_ids = $true_ids;
+    }
+
+    public function addTrueId($id){
+        $this->true_ids[] = $id;
     }
 
 
