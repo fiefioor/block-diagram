@@ -70,9 +70,10 @@ abstract class BaseShape
         $this->Content = $Content;
     }
 
-    public function fill(){
-        $this->preFill();
+    public function fill($code){
+        $code[] = $this->preFill();
 
+        return $code;
     }
 
     public abstract function preFill();

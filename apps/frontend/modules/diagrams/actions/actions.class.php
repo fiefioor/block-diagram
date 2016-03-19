@@ -21,7 +21,9 @@ class diagramsActions extends sfActions
   }
 
   public function executeGenerate(sfWebRequest $request){
-    $data = @$_POST['data'] ?: "";
+    //$data = @$_POST['data'] ?: "";
+
+    var_dump($request->getParameter('data'));
 
     if($request->hasParameter('data')){
       $data = $request->getParameter('data');

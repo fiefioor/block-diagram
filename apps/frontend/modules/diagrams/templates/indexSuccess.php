@@ -91,6 +91,13 @@
             <text x="25" y="20" fill="#554466">{{block.text}}</text>
         </svg>
         <svg
+            v-if="block.type==='endpredicate'"
+            height="35"
+            width="140">
+            <polygon class="block-endpredicate" points="0,17, 70,0, 140,17, 70,35"/>
+            <text x="25" y="20" fill="#554466">{{block.text}}</text>
+        </svg>
+        <svg
             v-if="block.type==='output'">
             <polygon points="0,0 140,0 70,35" class="block-output"/>
             <text x="25" y="20" fill="#554466">{{block.text}}</text>
@@ -120,6 +127,15 @@
                 :class="{active: active_attachments.right}"
 
                 @click="attachmentClicked('right')"
+            ></div>
+        </template>
+
+        <template v-if="block.type==='endpredicate'">
+            <div
+                class="attachment attachment-bottom"
+                :class="{active: active_attachments.bottom}"
+
+                @click="attachmentClicked('bottom')"
             ></div>
         </template>
 
@@ -198,6 +214,13 @@
                 @click="createBlock('predicate')"
             >
                 <i class="fa fa-plus"></i> predicate
+            </a>
+            <a
+                href="#"
+                class="btn btn-primary btn-sm"
+                @click="createBlock('endpredicate')"
+            >
+                <i class="fa fa-plus"></i> endPredicate
             </a>
             <a
                 href="#"

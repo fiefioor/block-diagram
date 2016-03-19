@@ -91,6 +91,7 @@
 			cssClass: function(block){
 				if(block.type === 'operand') return 'block-operand';
 				if(block.type === 'predicate') return 'block-predicate';
+				if(block.type === 'endpredicate') return 'block-endpredicate';
 				if(block.type === 'input') return 'block-input';
 				if(block.type === 'output') return 'block-output';
 				return '';

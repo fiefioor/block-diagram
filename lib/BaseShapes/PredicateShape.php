@@ -11,6 +11,9 @@ abstract class PredicateShape extends BaseShape
     protected $false_ids = array();
     protected $true_ids = array();
 
+    protected $false_blocks = array();
+    protected $true_blocks = array();
+
     /**
      * zwraca id elementu ktory jest na sciezce nie spelnajacej warunku
      *
@@ -19,6 +22,38 @@ abstract class PredicateShape extends BaseShape
     public function getFalseId()
     {
         return $this->false_id[0];
+    }
+
+    /**
+     * @return array
+     */
+    public function getFalseBlocks()
+    {
+        return $this->false_blocks;
+    }
+
+    /**
+     * @param array $false_blocks
+     */
+    public function setFalseBlocks($false_blocks)
+    {
+        $this->false_blocks = $false_blocks;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTrueBlocks()
+    {
+        return $this->true_blocks;
+    }
+
+    /**
+     * @param array $true_blocks
+     */
+    public function setTrueBlocks($true_blocks)
+    {
+        $this->true_blocks = $true_blocks;
     }
 
     /**

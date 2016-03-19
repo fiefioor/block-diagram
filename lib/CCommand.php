@@ -13,7 +13,10 @@ class CCommand
         $code = array();
 
         $blocks = self::deserialize($json);
-        var_dump($blocks);
+        foreach ($blocks as $block) {
+            if ($block instanceof CPredicateShape)
+                $blocks = self::predicatesOrders($blocks, $block);
+        }
 
         $code = self::fill($code, $blocks);
 
@@ -79,17 +82,22 @@ class CCommand
     */
     private static function deserialize($json)
     {
-        $decodeJson = (array) json_decode($json);
+        $decodeJson = (array)json_decode($json);
         $return = array();
 
-        foreach($decodeJson['blocks'] as $block){
-            //var_dump($block);
-            switch ($block->type)     {
+        var_dump($decodeJson);
+
+        foreach ($decodeJson['blocks'] as $block) {
+
+            switch ($block->type) {
                 case 'operand':
                     $tmp = new COperandShape();
                     break;
                 case 'predicate':
                     $tmp = new CPredicateShape();
+                    break;
+                case 'endpredicate':
+                    $tmp = new CEndPredicate();
                     break;
                 case 'input':
                     $tmp = new CInputShape();
@@ -104,13 +112,14 @@ class CCommand
         }
 
 
-        foreach($decodeJson['links'] as $link){
-            if(!$return[$link->a->block_id] instanceof CPredicateShape ){
+        foreach ($decodeJson['links'] as $link) {
+
+            var_dump($link);
+            if (!$return[$link->a->block_id] instanceof CPredicateShape) {
                 $return[$link->a->block_id]->setNextId($link->b->block_id);
 
-            }
-            else{
-                if($link->a->type == "right"){
+            } else {
+                if ($link->a->type == "right") {
                     $return[$link->a->block_id]->addFalseId($link->b->block_id);
                 } else {
                     $return[$link->a->block_id]->addTrueId($link->b->block_id);
@@ -122,15 +131,17 @@ class CCommand
         return $return;
     }
 
-    private static function preFill($code){
-        $code[] =  "#include \<iostream.h\>";
-        $code[] ="int main(){";
+    private static function preFill($code)
+    {
+        $code[] = "#include &ltiostream.h&gt";
+        $code[] = "int main() {";
 
         return $code;
     }
 
-    private static function postFill(){
-        return  "return 1; }";
+    private static function postFill()
+    {
+        return "return 1; }";
 
     }
 
@@ -140,51 +151,101 @@ class CCommand
      *
      * @param $blocks - tablica blokow
      */
-    private function predicatesOrders($blocks, CPredicateShape $predicat){
+    private static function predicatesOrders($blocks, CPredicateShape $predicat)
+    {
 
-        $trueIds = array();
+        $trueBlocs = array();
         $nextTrueId = null;
-        $falseIds = array();
+        $falseBlocs = array();
         $nextFalseId = null;
 
-        foreach($blocks as $block){
-            if($block->getId() == $predicat->getId()){
-                $trueIds[] = $predicat->getTrueId();
+        $counter = array(
+            'predicats' => 1,
+            'endpredicats' => 0
+        );
+
+        foreach ($blocks as $block) {
+            if ($block->getId() == $predicat->getId()) {
                 $nextTrueId = $predicat->getTrueId();
-                $falseIds[] = $predicat->getFalseId();
                 $nextFalseId = $predicat->getFalseId();
             }
         }
 
-        for($i=0; $i<count($blocks); $i++){
+        /** true path */
+        for ($i = 0; $i < count($blocks); $i++) {
+            $block = self::findBlockById($blocks, $nextTrueId);
 
+            if ($block) {
+
+                if (!$block instanceof CPredicateShape && !$block instanceof CEndPredicate) {
+                    $trueBlocs[] = $block;
+                    $nextTrueId = $block->getNextId();
+                    //unset($blocks[array_search($block,$blocks)]);
+                } else if ($block instanceof CEndPredicate) {
+                    break;
+                }
+            }
         }
+
+        /** false path */
+        for ($i = 0; $i < count($blocks); $i++) {
+            $block = self::findBlockById($blocks,$nextFalseId);
+
+            if ($block) {
+
+                if (!$block instanceof CPredicateShape && !$block instanceof CEndPredicate) {
+                    $falseBlocs[] = $block;
+                    $nextFalseId = $block->getNextId();
+                    //unset($blocks[array_search($block,$blocks)]);
+                } else if ($block instanceof CEndPredicate) {
+                    break;
+                }
+            }
+        }
+
+        $predicat->setFalseBlocks($falseBlocs);
+        $predicat->setTrueBlocks($trueBlocs);
+
+        foreach ($blocks as $block) {
+            if ($block->getId() == $predicat->getId()) {
+                $block = $predicat;
+            }
+        }
+
+        return $blocks;
 
     }
 
-    private static function fill($code , $blocks){
+    private static function fill($code, $blocks)
+    {
 
         $insertedIds = array();
 
-        $code[] = self::preFill();
+        $code = self::preFill($code);
 
         $ids = array_keys($blocks);
         $nextId = null;
 
-        foreach($ids as $id){
-            if($blocks[$id]->getPrevIds() == null){
-                $code[] = $blocks[$id]->fill();
+
+        /** znajdowanie elementu startowego */
+        foreach ($ids as $id) {
+            if ($blocks[$id]->getPrevIds() == null) {
+                $code = $blocks[$id]->fill($code);
                 $nextId = $blocks[$id]->getNextId();
                 $insertedIds[] = $id;
             }
         }
 
-        for($i = 0; $i < count($blocks) - 1; $i++){
 
-            if(!$blocks[$nextId] instanceof CPredicateShape) {
-                $code[] = $blocks[$nextId]->fill();
+        /** wlasciwe wypelnianie */
+        for ($i = 0; $i < count($blocks) - 1; $i++) {
+
+            if (!$blocks[$nextId] instanceof CPredicateShape) {
+                $code = $blocks[$nextId]->fill($code);
                 $insertedIds[] = $blocks[$nextId]->getId();
                 $nextId = $blocks[$nextId]->getNextId();
+            } else {
+                $code = $blocks[$nextId]->fill($code);
             }
 
         }
@@ -192,6 +253,23 @@ class CCommand
         $code[] = self::postFill();
 
         return $code;
+    }
+
+    public function findLastEndPredicateBlock($blocks, $type)
+    {
+
+
+    }
+
+    public static function findBlockById($blocks, $id)
+    {
+
+        foreach ($blocks as $block) {
+            if ($block->getId() == $id) return $block;
+        }
+
+        return null;
+
     }
 
 }
