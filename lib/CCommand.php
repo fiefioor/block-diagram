@@ -123,7 +123,7 @@ class CCommand
     }
 
     private static function preFill($code){
-        $code[] =  "#include \<iostream.h\>";
+        $code[] =  "#include &ltiostream.h&gt";
         $code[] ="int main(){";
 
         return $code;
@@ -166,7 +166,7 @@ class CCommand
 
         $insertedIds = array();
 
-        $code[] = self::preFill();
+        $code[] = self::preFill($code);
 
         $ids = array_keys($blocks);
         $nextId = null;

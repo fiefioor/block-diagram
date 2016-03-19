@@ -91,6 +91,7 @@
 			cssClass: function(block){
 				if(block.type === 'operand') return 'block-operand';
 				if(block.type === 'predicate') return 'block-predicate';
+				if(block.type === 'endpredicate') return 'block-endpredicate';
 				if(block.type === 'input') return 'block-input';
 				if(block.type === 'output') return 'block-output';
 				return '';
@@ -189,8 +190,9 @@
 			active_attachments: [],
 			blocks: [
 				{id: 1,type: 'operand', text: 'block #1', position: {x: 100, y: 55}},
-				{id: 2,type: 'predicate', text: 'block #2', position: {x: 166, y: 150}},
-				{id: 3,type: 'predicate', text: 'block #3', position: {x: 199, y: 270}},
+				{id: 2,type: 'predicate', text: 'block #2', position: {x: 235, y: 150}},
+				{id: 3,type: 'operand', text: 'block #3', position: {x: 199, y: 270}},
+				{id: 4,type: 'operand', text: 'block #3', position: {x: 370, y: 270}},
 			],
 			links: [
 				{

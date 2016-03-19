@@ -14,6 +14,12 @@
 	stroke-width:1;
 }
 
+.block-component polygon.block-endpredicate{
+	fill: #ea0018;
+	stroke:#333;
+	stroke-width:1;
+}
+
 .block-component polygon.block-output{
 	fill: #61ea29;
 	stroke:#333;
@@ -111,6 +117,10 @@
 }
 #block-list-component tr.block-predicate{
 	color:#757507;
+}
+
+#block-list-component tr.block-endpredicate{
+	color: #ff0000;
 }
 
 #block-list-component tr.block-input{
