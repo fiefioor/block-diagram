@@ -27,12 +27,12 @@ class diagramsActions extends sfActions
       $data = $request->getParameter('data');
     }
 
-    CCommand::run($data);
+    $this->Code = CCommand::run($data);
 
     //var_dump($request->hasParameter('data'));
 
     echo "<pre>";
     //var_dump($data);
-    $this->Code = 'Wygenerowany kod';
+    //$this->Code = 'Wygenerowany kod';
   }
 }

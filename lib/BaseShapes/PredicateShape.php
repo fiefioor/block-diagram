@@ -18,7 +18,7 @@ abstract class PredicateShape extends BaseShape
      */
     public function getFalseId()
     {
-        return $this->false_id[0];
+        return $this->false_ids[0];
     }
 
     /**

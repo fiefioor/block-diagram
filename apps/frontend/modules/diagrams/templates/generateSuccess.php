@@ -8,5 +8,9 @@
 
 ?>
 <div class="content">
-    <?php echo $Code; ?>
+    <h1>Wygenerowany kod</h1>
+    <?php foreach($Code as $line):
+        //var_dump($line);
+        echo "<p>".$line."<p>";
+    endforeach; ?>
 </div>

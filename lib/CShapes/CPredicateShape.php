@@ -25,7 +25,7 @@ class CPredicateShape extends PredicateShape
 
     public function fill($code)
     {
-        $this->preFill();
+        $code[] = $this->preFill();
 //        foreach($this->true_blocks as $true_block){
 //            //$code = $this->fill($code);
 //        }
