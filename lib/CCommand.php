@@ -187,15 +187,23 @@ class CCommand
             'endpredicats' => 0
         );
 
+        $i = 0;
+
         while($id){
+           // $i++;
+
+           // if($i > 100) break;
+
         //for ($i = 0; $i < count($blocks); $i++) {
             var_dump(count($ids['endpredicat']));
 
-            if($id == null) continue;
             $ids['checked'][] = $id;
             if($blocks[$id] instanceof CPredicateShape){
                 $counter['predicats'] += 1;
                 $ids['predicat'][$id] = $id;
+
+                var_dump(in_array( $blocks[$id]->getTrueId(), $ids['checked']));
+
                 if(in_array( $blocks[$id]->getTrueId(), $ids['checked'])){
                     $id = $blocks[$id]->getFalseId();
                 }else{
@@ -203,21 +211,27 @@ class CCommand
                 }
                 continue;
             }
-            if($blocks[$id] instanceof CEndpredicateShape){
+            if($blocks[$id] instanceof CEndpredicateShape) {
                 $counter['endpredicats'] += 1;
                 $ids['endpredicat'][$id] = $id;
-            }
 
-            if($counter['endpredicats'] != 0 && $counter['predicats'] >= $counter['endpredicats'] ){
-                $last_predicat = array_pop($ids['predicat']);
-                $last_endpredicat = array_pop($ids['endpredicat']);
+                $counts = array_count_values($ids['checked']);
+                $count = $counts[$id];
 
-                if($last_endpredicat) {
-                    var_dump($last_endpredicat);
-                    $blocks[$last_endpredicat]->setPredicateId($last_predicat);
-                    $id = $last_predicat;
+                if ($counter['endpredicats'] != 0 && $counter['predicats'] >= $counter['endpredicats']) {
+
+
+                    $last_predicat = array_pop($ids['predicat']);
+                    $last_endpredicat = array_pop($ids['endpredicat']);
+
+                    if ($last_predicat && $count < 2) {
+                        var_dump($last_predicat);
+                        $blocks[$last_endpredicat]->setPredicateId($last_predicat);
+                        $id = $last_predicat;
+                        continue;
+                    }
+
                 }
-                continue;
             }
 
             $id = $blocks[$id]->getNextId();
