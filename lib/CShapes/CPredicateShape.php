@@ -16,6 +16,20 @@ class CPredicateShape extends PredicateShape
         return "if(".$this->getContent()."){";
     }
 
+    public function preFillTrue()
+    {
+        // TODO: Implement preFill() method.
+
+        return "if(".$this->getContent()."){";
+    }
+
+    public function preFillFalse()
+    {
+        // TODO: Implement preFill() method.
+
+        return "else{";
+    }
+
     public function postFill()
     {
         // TODO: Implement postFill() method.

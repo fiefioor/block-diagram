@@ -192,7 +192,7 @@
 				{id: 1,type: 'operand', text: 'block #1', position: {x: 100, y: 55}},
 				{id: 2,type: 'predicate', text: 'block #2', position: {x: 235, y: 150}},
 				{id: 3,type: 'operand', text: 'block #3', position: {x: 199, y: 270}},
-				{id: 4,type: 'operand', text: 'block #3', position: {x: 370, y: 270}},
+				{id: 4,type: 'operand', text: 'block #4', position: {x: 370, y: 270}},
 			],
 			links: [
 				{

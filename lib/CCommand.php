@@ -20,7 +20,7 @@ class CCommand
 
         $code = self::fill($code, $blocks);
 
-        var_dump($code);
+        //var_dump($code);
         return $code;
 
     }
@@ -177,8 +177,9 @@ class CCommand
         $id = self::findFirstBlock($blocks);
 
         $ids = array(
-            'predicat' => 0,
-            'endpredicat' => 0
+            'predicat' => array(),
+            'endpredicat' => array(),
+            'checked' => array()
         );
 
         $counter = array(
@@ -186,21 +187,37 @@ class CCommand
             'endpredicats' => 0
         );
 
-        for ($i = 0; $i < count($blocks); $i++) {
+        while($id){
+        //for ($i = 0; $i < count($blocks); $i++) {
+            var_dump(count($ids['endpredicat']));
+
             if($id == null) continue;
+            $ids['checked'][] = $id;
             if($blocks[$id] instanceof CPredicateShape){
                 $counter['predicats'] += 1;
-                $ids['predicat'] = $id;
-                $id = $blocks[$id]->getTrueId();
+                $ids['predicat'][$id] = $id;
+                if(in_array( $blocks[$id]->getTrueId(), $ids['checked'])){
+                    $id = $blocks[$id]->getFalseId();
+                }else{
+                    $id = $blocks[$id]->getTrueId();
+                }
                 continue;
             }
             if($blocks[$id] instanceof CEndpredicateShape){
                 $counter['endpredicats'] += 1;
-                $ids['endpredicat'] = $id;
+                $ids['endpredicat'][$id] = $id;
             }
 
-            if($counter['predicats'] != 0 && $counter['predicats'] == $counter['endpredicats'] ){
-                $blocks[$ids['endpredicat']]->setPredicateId($ids['predicat']);
+            if($counter['endpredicats'] != 0 && $counter['predicats'] >= $counter['endpredicats'] ){
+                $last_predicat = array_pop($ids['predicat']);
+                $last_endpredicat = array_pop($ids['endpredicat']);
+
+                if($last_endpredicat) {
+                    var_dump($last_endpredicat);
+                    $blocks[$last_endpredicat]->setPredicateId($last_predicat);
+                    $id = $last_predicat;
+                }
+                continue;
             }
 
             $id = $blocks[$id]->getNextId();
@@ -229,7 +246,8 @@ class CCommand
             }
         }
 
-        for ($i = 0; $i < count($blocks) - 1; $i++) {
+        while($nextId){
+        //for ($i = 0; $i < count($blocks) - 1; $i++) {
 
             if ($nextId) {
                 if (!$blocks[$nextId] instanceof CPredicateShape) {
@@ -249,13 +267,18 @@ class CCommand
                     }
 
                 } else {
-                    $code = $blocks[$nextId]->fill($code);
+                    //$code = $blocks[$nextId]->fill($code);
                     $insertedIds[] = $blocks[$nextId]->getId();
+
                     if(array_search($blocks[$nextId]->getTrueId(),$insertedIds)){
+                        $code = $blocks[$nextId]->fillFalse($code);
                         $nextId = $blocks[$nextId]->getFalseId();
+
                     }
                     else{
+                        $code = $blocks[$nextId]->fillTrue($code);
                         $nextId = $blocks[$nextId]->getTrueId();
+
                     }
 
 
@@ -263,7 +286,7 @@ class CCommand
 
             }
         }
-
+        var_dump($insertedIds);
         $code[] = self::postFill();
 
         return $code;

@@ -55,6 +55,29 @@ abstract class PredicateShape extends BaseShape
         $this->true_ids[] = $id;
     }
 
+    public function preFillTrue()
+    {
+        // TODO: Implement preFill() method.
+    }
+
+    public function preFillFalse()
+    {
+        // TODO: Implement preFill() method.
+    }
+
+    public function fillTrue($code)
+    {
+        $code[] = $this->preFillTrue();
+
+        return $code;
+    }
+
+    public function fillFalse($code)
+    {
+        $code[] = $this->preFillFalse();
+
+        return $code;
+    }
 
 
 }
