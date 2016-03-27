@@ -27,7 +27,10 @@ class diagramsActions extends sfActions
       $data = $request->getParameter('data');
     }
 
-    $this->Code = CCommand::run($data);
+    $return = CCommand::run($data);
+
+    $this->Code = $return['code'];
+    $this->Errors = $return['errors'];
 
     //var_dump($request->hasParameter('data'));
 

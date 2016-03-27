@@ -10,18 +10,26 @@ class CCommand
 {
     public static function run($json)
     {
-        $code = array();
+        $return = array(
+            'code' => array(),
+            'errors' => array()
+        );
 
         $blocks = self::deserialize($json);
         self::setPredicats($blocks);
-        foreach ($blocks as $block) {
-            if($block instanceof CEndpredicateShape) var_dump($block);
+       /* foreach ($blocks as $block) {
+            if ($block instanceof CEndpredicateShape) var_dump($block);
+        }*/
+
+        $return['errors'] = self::validate($blocks);
+
+        if(! $return['errors']) {
+
+            $return['code'] = self::fill($return['code'], $blocks);
         }
 
-        $code = self::fill($code, $blocks);
-
         //var_dump($code);
-        return $code;
+        return $return;
 
     }
 
@@ -189,29 +197,29 @@ class CCommand
 
         $i = 0;
 
-        while($id){
-           // $i++;
+        while ($id) {
+            // $i++;
 
-           // if($i > 100) break;
+            // if($i > 100) break;
 
-        //for ($i = 0; $i < count($blocks); $i++) {
+            //for ($i = 0; $i < count($blocks); $i++) {
             var_dump(count($ids['endpredicat']));
 
             $ids['checked'][] = $id;
-            if($blocks[$id] instanceof CPredicateShape){
+            if ($blocks[$id] instanceof CPredicateShape) {
                 $counter['predicats'] += 1;
                 $ids['predicat'][$id] = $id;
 
-                var_dump(in_array( $blocks[$id]->getTrueId(), $ids['checked']));
+                var_dump(in_array($blocks[$id]->getTrueId(), $ids['checked']));
 
-                if(in_array( $blocks[$id]->getTrueId(), $ids['checked'])){
+                if (in_array($blocks[$id]->getTrueId(), $ids['checked'])) {
                     $id = $blocks[$id]->getFalseId();
-                }else{
+                } else {
                     $id = $blocks[$id]->getTrueId();
                 }
                 continue;
             }
-            if($blocks[$id] instanceof CEndpredicateShape) {
+            if ($blocks[$id] instanceof CEndpredicateShape) {
                 $counter['endpredicats'] += 1;
                 $ids['endpredicat'][$id] = $id;
 
@@ -247,7 +255,7 @@ class CCommand
 
         $insertedIds = array();
 
-        $code    = self::preFill($code);
+        $code = self::preFill($code);
 
         $ids = array_keys($blocks);
         $nextId = null;
@@ -260,23 +268,21 @@ class CCommand
             }
         }
 
-        while($nextId){
-        //for ($i = 0; $i < count($blocks) - 1; $i++) {
+        while ($nextId) {
+            //for ($i = 0; $i < count($blocks) - 1; $i++) {
 
             if ($nextId) {
                 if (!$blocks[$nextId] instanceof CPredicateShape) {
                     $code = $blocks[$nextId]->fill($code);
                     $insertedIds[] = $blocks[$nextId]->getId();
-                    if($blocks[$nextId] instanceof CEndpredicateShape ){
+                    if ($blocks[$nextId] instanceof CEndpredicateShape) {
                         $blocks[$nextId]->addVisit();
-                        if($blocks[$nextId]->CanMoveFoward()){
+                        if ($blocks[$nextId]->CanMoveFoward()) {
                             $nextId = $blocks[$nextId]->getNextId();
-                        }
-                        else{
+                        } else {
                             $nextId = $blocks[$nextId]->getPredicateId();
                         }
-                    }
-                    else{
+                    } else {
                         $nextId = $blocks[$nextId]->getNextId();
                     }
 
@@ -284,12 +290,11 @@ class CCommand
                     //$code = $blocks[$nextId]->fill($code);
                     $insertedIds[] = $blocks[$nextId]->getId();
 
-                    if(array_search($blocks[$nextId]->getTrueId(),$insertedIds)){
+                    if (array_search($blocks[$nextId]->getTrueId(), $insertedIds)) {
                         $code = $blocks[$nextId]->fillFalse($code);
                         $nextId = $blocks[$nextId]->getFalseId();
 
-                    }
-                    else{
+                    } else {
                         $code = $blocks[$nextId]->fillTrue($code);
                         $nextId = $blocks[$nextId]->getTrueId();
 
@@ -318,6 +323,57 @@ class CCommand
                 }
             }
         }
+    }
+
+    public static function validate($blocks)
+    {
+        $counter = array(
+            'start' => 0,
+            'stop' => 0,
+            'predicat' => 0,
+            'endpredicat' => 0
+        );
+
+        $errors = array();
+
+        /** @var BaseShape $block */
+        foreach ($blocks as $block) {
+            if ($block->getPrevIds() == null)
+                $counter['start'] += 1;
+
+            if (!$block instanceof PredicateShape) {
+                if ($block->getNextId() == null)
+                    $counter['stop'] += 1;
+
+                if ($block instanceof Endpredicate)
+                    $counter['endpredicat'] += 1;
+
+            } else {
+                $counter['predicat'] += 1;
+
+                if ($block->getTrueId() == null)
+                    $errors[] = 'There is no true path for predicate block: ' . $block->getContent();
+
+                if ($block->getFalseId() == null)
+                    $errors[] = 'There is no false path for predicate block: ' . $block->getContent();
+
+            }
+        }
+
+        if ($counter['start'] > 1)
+            $errors[] = 'There is more than 1 start';
+
+
+        if ($counter['stop'] > 1)
+            $errors[] = 'There is more than 1 end';
+
+        if($counter['predicat'] != $counter['endpredicat'])
+            $errors[] = 'Numbers of Predicats and Endpredicats are not Equal';
+
+        var_dump($counter);
+
+        return $errors;
+
     }
 
 }
