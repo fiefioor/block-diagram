@@ -30,6 +30,12 @@ class CPredicateShape extends PredicateShape
         return "else{";
     }
 
+    public function fillWhile($code){
+        $code[] =  'while('.$this->getContent().'){';
+
+        return $code;
+    }
+
     public function postFill()
     {
         // TODO: Implement postFill() method.

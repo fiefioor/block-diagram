@@ -203,14 +203,14 @@ class CCommand
             // if($i > 100) break;
 
             //for ($i = 0; $i < count($blocks); $i++) {
-            var_dump(count($ids['endpredicat']));
+            //var_dump(count($ids['endpredicat']));
 
             $ids['checked'][] = $id;
             if ($blocks[$id] instanceof CPredicateShape) {
                 $counter['predicats'] += 1;
                 $ids['predicat'][$id] = $id;
 
-                var_dump(in_array($blocks[$id]->getTrueId(), $ids['checked']));
+                //var_dump(in_array($blocks[$id]->getTrueId(), $ids['checked']));
 
                 if (in_array($blocks[$id]->getTrueId(), $ids['checked'])) {
                     $id = $blocks[$id]->getFalseId();
@@ -233,8 +233,9 @@ class CCommand
                     $last_endpredicat = array_pop($ids['endpredicat']);
 
                     if ($last_predicat && $count < 2) {
-                        var_dump($last_predicat);
+                        //var_dump($last_predicat);
                         $blocks[$last_endpredicat]->setPredicateId($last_predicat);
+                        $blocks[$last_predicat]->setEndPredicatId($last_endpredicat);
                         $id = $last_predicat;
                         continue;
                     }
@@ -291,11 +292,28 @@ class CCommand
                     $insertedIds[] = $blocks[$nextId]->getId();
 
                     if (array_search($blocks[$nextId]->getTrueId(), $insertedIds)) {
-                        $code = $blocks[$nextId]->fillFalse($code);
+
+                        if(self::isLoop($blocks[$nextId]->getFalseId(), $blocks)){
+                            $code = $blocks[$nextId]->fillWhile($code);
+                        }else{
+                            $code = $blocks[$nextId]->fillFalse($code);
+                        }
+
+                        //$code = $blocks[$nextId]->fillFalse($code);
                         $nextId = $blocks[$nextId]->getFalseId();
 
                     } else {
-                        $code = $blocks[$nextId]->fillTrue($code);
+
+                        if (array_search($blocks[$nextId]->getFalseId(), $insertedIds)){
+                            $nextId = $blocks[$blocks[$nextId]->getEndPredicatId()]->getNextId();
+                            continue;
+                        }
+
+                        if(self::isLoop($blocks[$nextId]->getTrueId(), $blocks)){
+                            $code = $blocks[$nextId]->fillWhile($code);
+                        }else{
+                            $code = $blocks[$nextId]->fillTrue($code);
+                        }
                         $nextId = $blocks[$nextId]->getTrueId();
 
                     }
@@ -305,7 +323,7 @@ class CCommand
 
             }
         }
-        var_dump($insertedIds);
+        //var_dump($insertedIds);
         $code[] = self::postFill();
 
         return $code;
@@ -362,18 +380,42 @@ class CCommand
 
         if ($counter['start'] > 1)
             $errors[] = 'There is more than 1 start';
+        else if ($counter['start'] == 0)
+            $errors[] = 'There must be at least 1 start';
 
 
         if ($counter['stop'] > 1)
             $errors[] = 'There is more than 1 end';
+        else if($counter['stop'] == 0)
+            $errors[] = 'There must be at least 1 stop';
 
         if($counter['predicat'] != $counter['endpredicat'])
             $errors[] = 'Numbers of Predicats and Endpredicats are not Equal';
 
-        var_dump($counter);
-
         return $errors;
 
+    }
+
+
+    /**
+     * Funkcja sprawdzajaca czy dana sekwencja jest pętlą
+     */
+    public static function isLoop($startId, $blocks){
+
+
+        $return = false;
+
+        while(!$blocks[$startId] instanceof PredicateShape && !$blocks[$startId] instanceof Endpredicate && $startId){
+            $startId = $blocks[$startId]->getNextId();
+            var_dump($startId);
+
+        }
+
+        if($blocks[$startId] instanceof PredicateShape)
+            $return = true;
+
+
+        return $return;
     }
 
 }

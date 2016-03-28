@@ -11,6 +11,24 @@ abstract class PredicateShape extends BaseShape
     protected $false_ids = array();
     protected $true_ids = array();
 
+    protected $end_predicat_id = null;
+
+    /**
+     * @return null
+     */
+    public function getEndPredicatId()
+    {
+        return $this->end_predicat_id;
+    }
+
+    /**
+     * @param null $end_predicat
+     */
+    public function setEndPredicatId($end_predicat)
+    {
+        $this->end_predicat_id = $end_predicat;
+    }
+
     /**
      * zwraca id elementu ktory jest na sciezce nie spelnajacej warunku
      *
