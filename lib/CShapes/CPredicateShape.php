@@ -36,6 +36,11 @@ class CPredicateShape extends PredicateShape
         return $code;
     }
 
+    public function fillEndWhile($code){
+        $code[] = '}';
+        return $code;
+    }
+
     public function postFill()
     {
         // TODO: Implement postFill() method.

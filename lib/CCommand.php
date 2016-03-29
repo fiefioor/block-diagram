@@ -274,16 +274,22 @@ class CCommand
 
             if ($nextId) {
                 if (!$blocks[$nextId] instanceof CPredicateShape) {
-                    $code = $blocks[$nextId]->fill($code);
+
                     $insertedIds[] = $blocks[$nextId]->getId();
                     if ($blocks[$nextId] instanceof CEndpredicateShape) {
                         $blocks[$nextId]->addVisit();
                         if ($blocks[$nextId]->CanMoveFoward()) {
+
+                            if(!self::isLoop($blocks[$blocks[$nextId]->getPredicateId()]->getTrueId(),$blocks)){
+                                $code = $blocks[$nextId]->fill($code);
+                            }
+
                             $nextId = $blocks[$nextId]->getNextId();
                         } else {
                             $nextId = $blocks[$nextId]->getPredicateId();
                         }
                     } else {
+                        $code = $blocks[$nextId]->fill($code);
                         $nextId = $blocks[$nextId]->getNextId();
                     }
 
@@ -293,8 +299,8 @@ class CCommand
 
                     if (array_search($blocks[$nextId]->getTrueId(), $insertedIds)) {
 
-                        if(self::isLoop($blocks[$nextId]->getFalseId(), $blocks)){
-                            $code = $blocks[$nextId]->fillWhile($code);
+                        if(self::isLoop($blocks[$nextId]->getTrueId(), $blocks)){
+                            $code = $blocks[$nextId]->fillEndWhile($code);
                         }else{
                             $code = $blocks[$nextId]->fillFalse($code);
                         }
@@ -303,11 +309,6 @@ class CCommand
                         $nextId = $blocks[$nextId]->getFalseId();
 
                     } else {
-
-                        if (array_search($blocks[$nextId]->getFalseId(), $insertedIds)){
-                            $nextId = $blocks[$blocks[$nextId]->getEndPredicatId()]->getNextId();
-                            continue;
-                        }
 
                         if(self::isLoop($blocks[$nextId]->getTrueId(), $blocks)){
                             $code = $blocks[$nextId]->fillWhile($code);
@@ -407,7 +408,7 @@ class CCommand
 
         while(!$blocks[$startId] instanceof PredicateShape && !$blocks[$startId] instanceof Endpredicate && $startId){
             $startId = $blocks[$startId]->getNextId();
-            var_dump($startId);
+          //  var_dump($startId);
 
         }
 
