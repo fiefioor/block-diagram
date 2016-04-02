@@ -12,6 +12,13 @@
             ></diagram-component>
         </div>
         <div class="col-md-4">
+            <var-list-component
+                :variables="variables"
+            ></var-list-component>
+            <var-editor-component
+                v-if="active_block"
+                transition="fadein"
+            ></var-editor-component>
             <block-list-component
                 :current_id="current_id"
                 :blocks.sync="blocks"
@@ -183,6 +190,21 @@
     </div>
 </template>
 
+<template id="var-editor-component">
+    <div id="var-editor-component" class="bottom-margin">
+        <div class="input-group">
+            <label for="var-text-input">Name: </label>
+            <input
+                id="var-text-input"
+                class="form-control"
+                type="text"
+                v-model="variable.name"
+            >
+        </div>
+    </div>
+</template>
+
+
 <template id="block-list-component">
     <div id="block-list-component" class="bottom-margin">
         <table class="table table-bordered table-condensed">
@@ -242,6 +264,32 @@
                 @click="createBlock('output')"
             >
                 <i class="fa fa-plus"></i> output
+            </a>
+        </div>
+    </div>
+</template>
+
+<template id="var-list-component">
+    <div id="var-list-component" class="bottom-margin">
+        <table class="table table-bordered table-condensed">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+            </tr>
+            <tr v-for="block in blocks" :class="cssClass(block)">
+                <td class="text-center">
+                </td>
+                <td>
+                </td>
+            </tr>
+        </table>
+        <div>
+            <a
+                href="#"
+                class="btn btn-primary btn-sm"
+                @click="addVariable()"
+            >
+                <i class="fa fa-plus"></i> variable
             </a>
         </div>
     </div>

@@ -110,6 +110,26 @@
 		}
 	};
 
+	var varListComponent = {
+		props: ['variables'],
+		template: '#var-list-component',
+		methods:{
+			addVariable: function(type, name){
+				this.variables.push({
+					type: type,
+					name: name
+				})
+			},
+
+			removeVariable: function(variable){
+				this.variables.$remove(variable);
+			}
+		}
+
+
+
+	};
+
 	var linkComponent = {
 		template: '#link-component',
 		props: ['link', 'blocks'],
@@ -183,6 +203,11 @@
 		template: '#block-editor-component',
 	};
 
+	var varEditorComponent = {
+		props: ['variable'],
+		template: '#var-editor-component',
+	};
+
 	new Vue({
 		el: '#app',
 		data: {
@@ -199,6 +224,9 @@
 					a: {block_id: 1, type: 'bottom'},
 					b: {block_id: 2, type: 'top'}
 				}
+			],
+			variables: [
+
 			]
 		},
 		methods: {
@@ -219,7 +247,8 @@
 			exported_data: function(){
 				return {
 					blocks: this.blocks,
-					links: this.links
+					links: this.links,
+					variables: this.variables
 				};
 			}
 		},
@@ -232,8 +261,10 @@
 
 		components: {
 			'diagram-component': diagramComponent,
-			'block-editor-component': blockEditorComponent,
-			'block-list-component': blockListComponent
+			'editor-component': blockEditorComponent,
+			'var-editor-component': varEditorComponent,
+			'block-list-component': blockListComponent,
+			'var-list-component' : varListComponent
 		},
 
 		events: {
