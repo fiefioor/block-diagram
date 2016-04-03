@@ -81,9 +81,10 @@ class Endpredicate extends BaseShape
      * Metoda sprawdzajaca czy mozna isc dalej w schemacie lub jest jeszcze jakas odnoga
      */
     public function CanMoveFoward(){
-        if($this->visit_count < count($this->prev_ids)){
-            return false;
+        var_dump(count($this->prev_ids)." - ".$this->visit_count);
+        if($this->visit_count == count($this->prev_ids)){
+            return true;
         }
-        else return true;
+        else return false;
     }
 }

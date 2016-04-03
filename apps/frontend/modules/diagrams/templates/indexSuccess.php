@@ -51,6 +51,8 @@
         <template v-for="block in blocks">
             <block-component :block="block"></block-component>
         </template>
+        <template v-for="variable in variables">
+        </template>
     </div>
 </template>
 
@@ -65,6 +67,9 @@
         />
         <circle :cx="b.x" :cy="b.y" r="3"/>
     </svg>
+</template>
+
+<template id="variable-component">
 </template>
 
 <template id="block-component">
@@ -275,12 +280,23 @@
             <tr>
                 <th>Name</th>
                 <th>Type</th>
+                <th></th>
             </tr>
-            <tr v-for="block in blocks" :class="cssClass(block)">
-                <td class="text-center">
-                </td>
-                <td>
-                </td>
+            <tr v-for="variable in variables"
+            ">
+            <td class="text-center">
+                {{variable.name}}
+            </td>
+            <td>
+                {{variable.type}}
+            </td>
+            <td>
+                <a href="#" class="btn btn-xs btn-warning"
+                   @click="removeVariable(variable)"
+                >
+                    <i class="fa fa-times"></i>
+                </a>
+            </td>
             </tr>
         </table>
         <div>
@@ -291,6 +307,21 @@
             >
                 <i class="fa fa-plus"></i> variable
             </a>
+            <button type="button" id="btnPopupShow" class="btn btn-primary btn-sm">Variable</button>
+
+        </div>
+        <div class="messagepop pop">
+            <p><label for="name">Variable Name</label><input type="text" size="30" name="var-name" id="var-name"/></p>
+
+            <p><label for="type">Variable Type</label><input type="text" size="30" name="var-type" id="var-type"/></p>
+
+            <p><a
+                    href="#"
+                    class="btn btn-primary btn-sm"
+                    @click="addVariable()"
+                >
+                    <i class="fa fa-plus"></i> Add
+                </a> or <a class="close" href="/">Cancel</a></p>
         </div>
     </div>
 </template>
@@ -299,3 +330,41 @@
 <script src="/vendor/vue.js"></script>
 <script src="/vendor/jquery-2.2.1.min.js"></script>
 <script src="/js/index.js"></script>
+
+<script>
+    $(document).ready(function () {
+        /*  $("btnPopupShow").onClick(function () {
+         $('#popupEventForm').show();
+         // alert('pizda');
+         });*/
+
+        function deselect(e) {
+            $('.pop').slideFadeToggle(function () {
+                e.removeClass('selected');
+            });
+        }
+
+        $(function () {
+            $('#btnPopupShow').on('click', function () {
+                if ($(this).hasClass('selected')) {
+                    deselect($(this));
+                } else {
+                    $(this).addClass('selected');
+                    $('.pop').slideFadeToggle();
+                }
+                return false;
+            });
+
+            $('.close').on('click', function () {
+                deselect($('#btnPopupShow'));
+                return false;
+            });
+
+        });
+
+        $.fn.slideFadeToggle = function (easing, callback) {
+            return this.animate({opacity: 'toggle', height: 'toggle'}, 'fast', easing, callback);
+        };
+    });
+
+</script>

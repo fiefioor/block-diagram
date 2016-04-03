@@ -114,11 +114,16 @@
 		props: ['variables'],
 		template: '#var-list-component',
 		methods:{
-			addVariable: function(type, name){
+			addVariable: function(){
+
 				this.variables.push({
-					type: type,
-					name: name
-				})
+					type: $('#var-type').val(),
+					name: $('#var-name').val()
+				});
+
+				$('#var-type').val('');
+				$('#var-name').val('');
+
 			},
 
 			removeVariable: function(variable){
@@ -261,7 +266,7 @@
 
 		components: {
 			'diagram-component': diagramComponent,
-			'editor-component': blockEditorComponent,
+			'block-editor-component': blockEditorComponent,
 			'var-editor-component': varEditorComponent,
 			'block-list-component': blockListComponent,
 			'var-list-component' : varListComponent

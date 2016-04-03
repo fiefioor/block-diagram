@@ -91,7 +91,7 @@
 
 #diagram-component{
 	position: relative;
-	height: 600px;
+	height: 1200px;
 
 	overflow: hidden; /* changing to scroll would be better, but it would require rewriting how links are drawn */
 

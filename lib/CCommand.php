@@ -11,11 +11,13 @@ class CCommand
     public static function run($json)
     {
         $return = array(
+            'variables' => array(),
             'code' => array(),
             'errors' => array()
         );
 
         $blocks = self::deserialize($json);
+        $variables = self::deserializeVariables($json);
         self::setPredicats($blocks);
        /* foreach ($blocks as $block) {
             if ($block instanceof CEndpredicateShape) var_dump($block);
@@ -24,8 +26,7 @@ class CCommand
         $return['errors'] = self::validate($blocks);
 
         if(! $return['errors']) {
-
-            $return['code'] = self::fill($return['code'], $blocks);
+            $return['code'] = self::fill($return['code'], $blocks, $variables);
         }
 
         //var_dump($code);
@@ -136,9 +137,25 @@ class CCommand
         return $return;
     }
 
+    public static function deserializeVariables($json){
+
+        $return = array();
+
+        $decodeJson = (array)json_decode($json);
+
+        foreach ($decodeJson['variables'] as $variable) {
+            if((string)$variable->type && (string)$variable->name)
+                $return[] = $variable->type." ".$variable->name.";";
+        }
+
+        return $return;
+
+    }
+
+
     private static function preFill($code)
     {
-        $code[] = "#include &ltiostream.h&gt";
+        $code[] = "#include <iostream.h>";
         $code[] = "int main(){";
 
         return $code;
@@ -251,12 +268,22 @@ class CCommand
         return $blocks;
     }
 
-    private static function fill($code, $blocks)
+    private static function fill($code, $blocks, $variables)
     {
 
         $insertedIds = array();
 
         $code = self::preFill($code);
+
+        if(count($variables)) {
+            $code[] = '//Variables initialization';
+            $code[] = ' ';
+
+            foreach ($variables as $variable) {
+                $code[] = $variable;
+            }
+            $code[] = ' ';
+        }
 
         $ids = array_keys($blocks);
         $nextId = null;
@@ -280,12 +307,15 @@ class CCommand
                         $blocks[$nextId]->addVisit();
                         if ($blocks[$nextId]->CanMoveFoward()) {
 
+                            var_dump($blocks[$nextId]->CanMoveFoward());
+
                             if(!self::isLoop($blocks[$blocks[$nextId]->getPredicateId()]->getTrueId(),$blocks)){
                                 $code = $blocks[$nextId]->fill($code);
                             }
 
                             $nextId = $blocks[$nextId]->getNextId();
                         } else {
+                            $code = $blocks[$nextId]->fill($code);
                             $nextId = $blocks[$nextId]->getPredicateId();
                         }
                     } else {
@@ -301,8 +331,10 @@ class CCommand
 
                         if(self::isLoop($blocks[$nextId]->getTrueId(), $blocks)){
                             $code = $blocks[$nextId]->fillEndWhile($code);
+                            var_dump('endwhile');
                         }else{
                             $code = $blocks[$nextId]->fillFalse($code);
+                            var_dump('fillfalse');
                         }
 
                         //$code = $blocks[$nextId]->fillFalse($code);
@@ -377,6 +409,13 @@ class CCommand
                     $errors[] = 'There is no false path for predicate block: ' . $block->getContent();
 
             }
+
+            if(!$block instanceof Endpredicate){
+                if(!$block->getContent()){
+                    $errors[] = 'Block id: '.$block->getId()." has no content";
+                }
+            }
+
         }
 
         if ($counter['start'] > 1)

@@ -27,11 +27,9 @@ class diagramsActions extends sfActions
       $data = $request->getParameter('data');
     }
 
-    var_dump($data);
-    die;
-
     $return = CCommand::run($data);
 
+    $this->Variables = $return['variables'];
     $this->Code = $return['code'];
     $this->Errors = $return['errors'];
 
