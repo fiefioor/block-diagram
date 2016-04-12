@@ -39,6 +39,12 @@
                 <button id ="btnSave" class = "btn btn-success btn-lg" >
                     <i class="fa fa-save"></i> Zapisz do pliku
                 </button>
+                <button id ="btnLoad" class = "btn btn-success btn-lg" >
+                    <i class="fa fa-file"></i> Wczytaj z pliku
+                </button>
+                <input type="file" id="files" name="files[]" multiple />
+                <output id="list"></output>
+
             </div>
         </div>
     </div>
@@ -116,12 +122,12 @@
         <svg
             v-if="block.type==='output'">
             <polygon points="0,0 140,0 70,35" class="block-output"/>
-            <text x="25" y="20" fill="#554466">{{block.text}}</text>
+            <text x="50" y="20" fill="#554466">{{block.text}}</text>
         </svg>
         <svg
             v-if="block.type==='input'">
             <polygon points="70,0 0,35 140,35" class="block-input"/>
-            <text x="25" y="20" fill="#554466">{{block.text}}</text>
+            <text x="50" y="20" fill="#554466">{{block.text}}</text>
         </svg>
 
         <div
@@ -355,6 +361,7 @@
                 } else {
                     $(this).addClass('selected');
                     $('.pop').slideFadeToggle();
+                    alert(jebando);
                 }
                 return false;
             });

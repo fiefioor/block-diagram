@@ -62,11 +62,15 @@ class diagramsActions extends sfActions
     header('Content-Transfer-Encoding: binary');
     header('Content-Length: ' . strlen($fileContent));
 
-    echo $fileContent;
+    //echo $fileContent;
 
     //return sfView::NONE;
 
     return $this->renderText($fileContent);
+
+  }
+
+  public function executeLoadFromFile(sfWebRequest $request){
 
   }
 }

@@ -213,7 +213,7 @@
 		template: '#var-editor-component',
 	};
 
-	new Vue({
+	var jebando = new Vue({
 		el: '#app',
 		data: {
 			active_block: false,
@@ -336,4 +336,44 @@
 
 	});
 
+	$("#btnLoad").click( function () {
+		if(window.File && window.FileReader && window.FileList && window.Blob){
+			alert("co jest get_right kurwa?");
+		} else {
+			alert("chuj");
+		}
+
+	});
+
+	function handleFileSelect(evt) {
+		var files = evt.target.files; // FileList object
+
+		// files is a FileList of File objects. List some properties.
+		var output;
+		for (var i = 0, f; f = files[i]; i++) {
+
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				//alert( reader.result);
+
+				var object = JSON.parse(reader.result);
+
+				jebando.blocks = object.blocks;
+				jebando.links = object.links;
+				jebando.variables = object.variables;
+
+				//console.log(object.blocks);
+
+				//alert(JSON.parse(reader.result));
+			}
+
+			reader.readAsText(f);
+
+		}
+		//document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+	}
+
+	document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+	//console.log(jebando.blocks);
 })();
