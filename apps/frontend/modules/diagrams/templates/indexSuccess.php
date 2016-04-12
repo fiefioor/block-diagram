@@ -4,6 +4,7 @@
 <link rel="stylesheet" type="text/css" href="/vendor/font-awesome-4.5.0/css/font-awesome.min.css">
 
 <div id="app" class="container">
+    <iframe id="my_iframe" style="display:none;"></iframe>
     <div class="row">
         <div class="col-md-8">
             <diagram-component
@@ -35,6 +36,9 @@
                     </button>
                     <input name="data" type="hidden" :value='exported_data|json'>
                 </form>
+                <button id ="btnSave" class = "btn btn-success btn-lg" >
+                    <i class="fa fa-save"></i> Zapisz do pliku
+                </button>
             </div>
         </div>
     </div>
@@ -365,6 +369,27 @@
         $.fn.slideFadeToggle = function (easing, callback) {
             return this.animate({opacity: 'toggle', height: 'toggle'}, 'fast', easing, callback);
         };
+
+
+        $('#btnSave').click(function () {
+
+            var dataRow = {
+                'data': $('input[name=data]').val(),
+            }
+            //alert("<?php echo url_for('saveToFile'); ?>");
+            $.ajax({
+                type: 'POST',
+                url: "<?php echo url_for('saveToFile'); ?>",
+                data: dataRow,
+                success: function (response) {
+                    alert(response);
+                   // document.getElementById('my_iframe').src = response;
+                    window.location.href="<?php echo url_for('@saveToFile');?>"
+                    //location.reload();
+                }
+            });
+        });
+
     });
 
 </script>
